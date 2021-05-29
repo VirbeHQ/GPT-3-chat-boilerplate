@@ -32,7 +32,8 @@ python3 -m server.app
 1. To make sure Virbe platform is able to connect to your local server install and use `ngrok`
    ```
    ngrok http 9000
-```
+   ```
 
-1. Once you create a proxy, go to your being dashboard and change your custom endpoint to `http://<your_ngrok_domina.ngrok.io/api/chat/`
-1. You can start chatting with your being
+1. Once you create a proxy, go to your [being dashboard](https://virbe.app/beings)  and set your custom endpoint
+   to `http://<your_ngrok_domina.ngrok.io/api/chat/`
+1. Start your virtual being, and once it's published live you can start chatting with via provided web plugin. ;)
