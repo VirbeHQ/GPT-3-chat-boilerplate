@@ -16,19 +16,23 @@
     ```
     pipenv install 
     ```
+1. Before running the server, make sure to create `.env' file in the root folder with your API KEY
+    ```
+    cp .env.sample .env
+    ```   
 
-# Running server
-
-```
-python3 app.py 
-```
-
-# Virbe integration
-
-## Local development
-
-To make sure Virbe platform is able to connect to your local server use `ngrok`
+# Running server locally
 
 ```
-ngrok http 9000
+python3 -m server.app 
 ```
+
+# Virbe integration from local server
+
+1. To make sure Virbe platform is able to connect to your local server install and use `ngrok`
+   ```
+   ngrok http 9000
+```
+
+1. Once you create a proxy, go to your being dashboard and change your custom endpoint to `http://<your_ngrok_domina.ngrok.io/api/chat/`
+1. You can start chatting with your being

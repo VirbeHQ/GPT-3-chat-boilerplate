@@ -1,6 +1,8 @@
 from flask import Flask, request
 from marshmallow import fields, Schema, ValidationError
 
+from server.gpt3_wrapper import Gpt3Wrapper
+
 app = Flask(__name__)
 
 
@@ -32,6 +34,27 @@ class VirbeChatResponseSchema(Schema):
     beingAction = fields.Nested(BeingActionSchema())
 
 
+wrapper = Gpt3Wrapper()
+
+DEFAULT_RESPONSE = {
+    "text": "Are you ready for a hackathon?",
+    "custom": {
+        "action": "/areYouReady",
+        "payload": "button",
+        "data": [
+            {
+                "title": "Almost",  # Title is what's displayed on the button in the web component
+                "payload": "No",  # Payload is sent to engine as text if user clicks the button
+            },
+            {
+                "title": "Hell Yeah!",
+                "payload": "Yes",
+            },
+        ]
+    }
+}
+
+
 @app.route("/api/chat/", methods=["POST"])
 def chat():
     json_data = request.get_json()
@@ -46,28 +69,17 @@ def chat():
     except ValidationError as err:
         return err.messages, 422
 
-    # TODO write code to make your own
+    being_action = DEFAULT_RESPONSE
+    # TODO customise your own chat response
+    # gpt_response = wrapper.chat_with_gpt3(data['userAction']['text'])
+    # being_action = {
+    #     "text": gpt_response
+    # }
 
     return responseSchema.dump({
         "userAction": data['userAction'],
         "sessionId": data['sessionId'],
-        "beingAction": {
-            "text": "Are you ready for a hackathon?",
-            "custom": {
-                "action": "/areYouReady",
-                "payload": "button",
-                "data": [
-                    {
-                        "title": "Yes",
-                        "payload": "Yes",
-                    },
-                    {
-                        "title": "No",
-                        "payload": "Yes",
-                    },
-                ]
-            }
-        }
+        "beingAction": being_action
     })
 
 
