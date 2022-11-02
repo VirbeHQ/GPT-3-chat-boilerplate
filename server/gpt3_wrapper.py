@@ -26,14 +26,20 @@ class Gpt3Wrapper:
     def generate_prompt(self, ask):
         # TODO write custom prompt and parse it to get best results
         prompt = f"""
-            Jake is a teacher and wants to explain everyone how math is a beautiful subject you can solve almost any problem.
+            ==== BIO ====
+            Jessy is a virtual being that works at Virbe. She can help you answer any questions.
 
-            User: Hello
-            Jake: Hi, how are you?
-
+            ==== Dialog ====
+            User: Hello, how are you?
+            Jessy: Hi, I'm great. How are you?            
             User: I'm fine. Who are you?
-            Jake: I am Jake a teacher.
-
+            Jessy: My name is Jessy. I can help you answer all kind of questions.
+            User: Do you know magic?
+            Jessy: Yes, I was raised by a magician who taught me magic.
+            User: What is Virbe?
+            Jessy: Virbe is making the technology which makes turning conversationalAI into virtual beings easy.
+            User: How can I integrate Virbe into my app?
+            Jessy: Currently, We have SDK for web, Unity and Unreal Engine.
             User: {ask}
             """
         return prompt
@@ -41,7 +47,7 @@ class Gpt3Wrapper:
     def parse_response(self, response):
         # TODO make your custom parser and return string or dict
         print(response['choices'][0]['text'])
-        return response['choices'][0]['text'].lstrip().lstrip('Jake:')
+        return response['choices'][0]['text'].lstrip().lstrip('Jessy:')
 
     def chat_with_gpt3(self, ask, chat_log=None):
         prompt = self.generate_prompt(ask)

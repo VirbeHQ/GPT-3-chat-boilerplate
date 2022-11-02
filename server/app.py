@@ -7,13 +7,12 @@ app = Flask(__name__)
 
 
 class UserActionSchema(Schema):
-    text = fields.String()
-    languageCode = fields.String()
+    text = fields.String(required=True)
 
 
 class VirbeChatRequestSchema(Schema):
-    userAction = fields.Nested(UserActionSchema())
-    sessionId = fields.UUID()
+    userAction = fields.Nested(UserActionSchema(), required=True)
+    conversationId = fields.UUID(required=True)
 
 
 class CustomDataSchema(Schema):
@@ -24,35 +23,42 @@ class CustomDataSchema(Schema):
 
 class BeingActionSchema(Schema):
     text = fields.String()
-    languageCode = fields.String()
     custom = fields.Nested(CustomDataSchema())
 
 
+class IntentSchema(Schema):
+    name = fields.String()
+    confidence = fields.Number()
+
+
 class VirbeChatResponseSchema(Schema):
-    userAction = fields.Nested(UserActionSchema())
-    sessionId = fields.UUID()
-    beingAction = fields.Nested(BeingActionSchema())
+    conversationId = fields.UUID(required=True)
+    intent = fields.Nested(IntentSchema())
+    beingActions = fields.List(fields.Nested(BeingActionSchema()), required=True)
 
 
 wrapper = Gpt3Wrapper()
 
-DEFAULT_RESPONSE = {
+DEFAULT_RESPONSE = [{
     "text": "Are you ready for a hackathon?",
     "custom": {
         "action": "/areYouReady",
         "payload": "button",
-        "data": [
-            {
-                "title": "Almost",  # Title is what's displayed on the button in the web component
-                "payload": "No",  # Payload is sent to engine as text if user clicks the button
-            },
-            {
-                "title": "Hell Yeah!",
-                "payload": "Yes",
-            },
-        ]
+        "data": {
+            "ui": [
+                {
+                    "type": "button",
+                    "title": "Almost",  # Title is what's displayed on the button in the web component
+                    "payload": "No",  # Payload is sent to engine as text if user clicks the button
+                },
+                {
+                    "type": "button",
+                    "title": "Hell Yeah!",
+                    "payload": "Yes",
+                }, ]
+        }
     }
-}
+}]
 
 
 @app.route("/api/chat/", methods=["POST"])
@@ -69,19 +75,18 @@ def chat():
     except ValidationError as err:
         return err.messages, 422
 
-    being_action = DEFAULT_RESPONSE
+    being_actions = DEFAULT_RESPONSE
     # TODO customise your own chat response
     # gpt_response = wrapper.chat_with_gpt3(data['userAction']['text'])
-    # being_action = {
+    # being_actions = [{
     #     "text": gpt_response
-    # }
+    # }]
 
     return responseSchema.dump({
-        "userAction": data['userAction'],
-        "sessionId": data['sessionId'],
-        "beingAction": being_action
+        "intent": {"name": "default", "confidence": 1.0},
+        "conversationId": data['conversationId'],
+        "beingActions": being_actions
     })
-
 
 if __name__ == '__main__':
     app.run(port=9000)
