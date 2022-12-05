@@ -13,6 +13,9 @@ class UserActionSchema(Schema):
 class VirbeChatRequestSchema(Schema):
     userAction = fields.Nested(UserActionSchema(), required=True)
     conversationId = fields.UUID(required=True)
+    endUserId = fields.UUID(required=True)
+    languageCode = fields.String(required=False)
+    context = fields.Raw(allow_none=True, required=False)
 
 
 class CustomDataSchema(Schema):
