@@ -43,7 +43,7 @@ DEFAULT_RESPONSE = [{
     "text": "Are you ready for a hackathon?",
     "custom": {
         "action": "/areYouReady",
-        "payload": "button",
+        "payload": "virbe",
         "data": {
             "ui": [
                 {
@@ -76,8 +76,10 @@ def chat():
         return err.messages, 422
 
     being_actions = DEFAULT_RESPONSE
+
     # TODO customise your own chat response
-    # gpt_response = wrapper.chat_with_gpt3(data['userAction']['text'])
+    # user_ask = data['userAction']['text']
+    # gpt_response = wrapper.chat_with_gpt3(user_ask)
     # being_actions = [{
     #     "text": gpt_response
     # }]
@@ -87,6 +89,7 @@ def chat():
         "conversationId": data['conversationId'],
         "beingActions": being_actions
     })
+
 
 if __name__ == '__main__':
     app.run(port=9000)
